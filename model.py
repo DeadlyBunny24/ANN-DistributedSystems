@@ -1,7 +1,9 @@
 import tensorflow as tf
 import numpy as np
+from tensorflow.python import debug as tf_debug
 
-def train_ANN(mem_size=12702, hidden_size=200, learning_rate=0.01, epochs=5):
+
+def train_ANN(mem_size=12702, hidden_size=200, learning_rate=0.0001, epochs=5):
 
     # Parameters ===============================================================
 
@@ -28,7 +30,7 @@ def train_ANN(mem_size=12702, hidden_size=200, learning_rate=0.01, epochs=5):
                                 initializer=tf.constant_initializer(0.1))
 
     with tf.variable_scope('hidden_layer',reuse=True):
-        hidden_outpt = tf.sigmoid(tf.matmul(inputs,W) + b)
+        hidden_outpt = tf.nn.relu(tf.matmul(inputs,W) + b)
 
     # Max-pooling layer
     with tf.name_scope('pooling_layer'):
@@ -91,6 +93,9 @@ def train_ANN(mem_size=12702, hidden_size=200, learning_rate=0.01, epochs=5):
         # TODO: Update the input pipeline to use the Dataset API.
         coord = tf.train.Coordinator()
         threads = tf.train.start_queue_runners(coord=coord)
+
+        # sess = tf_debug.LocalCLIDebugWrapperSession(sess)
+        # sess.add_tensor_filter("has_inf_or_nan", tf_debug.has_inf_or_nan)
 
         try:
             while(True):
